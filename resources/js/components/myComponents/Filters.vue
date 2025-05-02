@@ -1,0 +1,114 @@
+<template>
+    <div class = "filters-container">
+    <div class = "filters">
+        <div class = "filter-main-span">
+            <span >Φίλτρα</span>
+        </div>
+        <div class = "real-filter-container">
+            <div class = "filter1">
+            <div class = "filter1-dropdown">
+                <span class = "filter-1-secondary-span">Κατηγορία</span>
+                <svg xmlns="http://www.w3.org/2000/svg" style="cursor: pointer;" id="filter_dropdown_btn" onclick="filter_dropdown()" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M6 9L12 15L18 9" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+            </div>
+            <div class = "filter1-lines-container" id = "filter1_container">
+                <div v-for="item in props.categories" class="filter1-line" style="margin-top: 12px;">
+                    <div class="filter1-line-left-part">
+                        <input 
+                            :id="item.name + '_input'" 
+                            class="filter1-checkbox" 
+                            type="checkbox" 
+                            @change="checkbox(item.name)"
+                        >
+                        <span class="filter1-text">{{ item.name }}</span>
+                    </div>
+                    <span class="filter1-line-right-part filter1-text"></span>
+                </div>
+            </div>
+            </div>
+            <div class = "price-filter">
+                <span class = "span-in-price-filter">Εύρος τιμής</span>
+                <div class = "real-price-filter">
+                    <div class = price-input-div>
+                        <span class = "secondary_span_in_price">From</span>
+                        <input id = "price_from" class = "price-input" onchange="filter_by_price()" value="10$">
+                    </div>
+                    <div class = price-input-div>
+                        <span class = "secondary_span_in_price">To</span>
+                        <input id = "price_to" class = "price-input" onchange="filter_by_price()"  value="50$">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class = "container">
+        <div class = "filter-navbar">
+            <div class = "filter-navbar-left">
+                <div class = "filter-navbar-left">
+                    <div class = "filter-div">Εφαρμοσμένο φίλτρο</div>
+                    <div v-for="item in props.categories" :id = "item.name" style="display: none;" class = "filter-selection">
+                        <div name="value" class = "font-syne">{{ item.name }}</div>
+                        <svg style="cursor:pointer" @click="checkbox(item.name)" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M6.75824 17.2426L12.0009 12M12.0009 12L17.2435 6.75739M12.0009 12L6.75824 6.75739M12.0009 12L17.2435 17.2426" stroke="#727272" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                    </div>
+                </div>
+            </div>
+            <div class = "filter-navbar-right font-syne">
+                <div class = "filter-div" style="width: fit-content !important;">Ταξινόμηση κατά</div>
+                <div style="position: relative;">
+                    <button class = "sorting_button font-syne" type="button" onclick="show_sorting_dropdown()">Δημοτικότητα<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M6 9L12 15L18 9" stroke="#727272" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg></button>
+                    <div id="sorting_dropdown" style="display: none;" class="sorting_dropdown">
+                        <div id="sort_by_price_div" onclick="do_some_magic('sorting_svg1','sort_by_price_div')" class="sorting_dropdown-element">sort by price &nbsp;<svg id="sorting_svg1" style="width: 25px;filter: invert(20%) sepia(52%) saturate(2387%) hue-rotate(329deg) brightness(102%) contrast(102%);" data-name="1-Arrow Up" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="m26.71 10.29-10-10a1 1 0 0 0-1.41 0l-10 10 1.41 1.41L15 3.41V32h2V3.41l8.29 8.29z"/></svg></div>
+                        <div id="sort_by_date_div" onclick="do_some_magic('sorting_svg2','sort_by_date_div')" class="sorting_dropdown-element">sort by date&nbsp;<svg id="sorting_svg2"  style="width: 25px;filter: invert(20%) sepia(52%) saturate(2387%) hue-rotate(329deg) brightness(102%) contrast(102%);" data-name="1-Arrow Up" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="m26.71 10.29-10-10a1 1 0 0 0-1.41 0l-10 10 1.41 1.41L15 3.41V32h2V3.41l8.29 8.29z"/></svg></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ProductList :products="products"></ProductList>
+        <div class = "products-navigation">
+            <router-link  id = "previous" :to="{ name: 'user_index', params: { page: '' } }">
+                <button class = "products-navigation-button font-syne">Προηγούμενος</button>
+            </router-link>
+            <span class = "pages_bar">
+            <router-link :to="{ name: 'user_index', params: { page: 1 } }" class = "pages_bar-link  pages_bar-link_selected font-syne">1</router-link>
+            <a v-for="i in (Math.min(3, props.pageCount) - 1)" v-if="props.pageCount >= 2" :to="{name: 'user_index', params:{page: i}}" class = "pages_bar-link font-syne">{{ i }}</a>
+            <span v-if="props.pageCount > 6" class = "pages_bar-dots">...</span>
+            <a v-for="i in props.pageCount - Math.max(props.pageCount - 2,4) + 1" v-if="Math.max(props.pageCount - 2,4) < props.pageCount" :to="{name: 'user_index', params:{page: i + Math.max(props.pageCount - 2,4)}}" class = "pages_bar-link font-syne">{{ i + Math.max($page_count - 2,4) }}</a>
+            </span>
+            <router-link id = "next" :to="{ name: 'user_index', params: { page: 2 } }">
+                <button class = "products-navigation-button font-syne">Επόμενος</button>
+            </router-link>
+        </div>
+    </div>
+</div>
+</template>
+<script setup>
+    import {ref, onMounted} from 'vue'
+    import axios from 'axios'
+    import ProductList from './ProductList.vue'
+
+    const props = defineProps({
+        pageCount:{
+            type: Number,
+            required: true
+        },
+        categories:{
+            type: Array,
+            required: true
+        },
+        products:{
+            type: Object,
+            required: true
+        }
+    })
+
+    onMounted(() => {
+        console.log("count is:", props.pageCount)
+        console.log("categories are:", props.categories)
+        index_onload(props.pageCount);
+    })
+</script>
