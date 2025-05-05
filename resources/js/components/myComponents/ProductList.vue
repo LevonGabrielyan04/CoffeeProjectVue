@@ -1,8 +1,8 @@
 <template>
     <div id = "products-main" class = "products-main">
-    <ProductCard v-for="product in productsLocal" :product="product" :is_card="props.is_card" @delete-product="reciveEmit"></ProductCard>
+    <ProductCard v-for="product in props.products" :product="product" :is_card="props.is_card"></ProductCard>
     
-    <h2 v-if="is_card && _.isEmpty(productsLocal)">Card is empty</h2>
+    <h2 v-if="is_card && _.isEmpty(props.products)">Card is empty</h2>
 </div>
 </template>
 <script setup>
@@ -20,14 +20,4 @@ import {ref} from 'vue'
             required: true
         }
     });
-
-    const productsLocal = ref(props.products);
-
-    function reciveEmit(productId){
-        console.log("record with this id is deleted: ", productId)
-
-        productsLocal.value = productsLocal.value.filter((item) => {
-            item.id != productId
-        })
-    }
 </script>

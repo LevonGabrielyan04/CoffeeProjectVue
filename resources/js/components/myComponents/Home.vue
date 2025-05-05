@@ -6,37 +6,24 @@
     import {ref, onMounted} from 'vue'
     import axios from 'axios'
     import { useRoute } from 'vue-router'
+    import {useArrayStore} from '../../../../public/stores/arrayStore'
 
-    const pageCount = ref(null)
-    const categories = ref(null)
-    const products = ref(null)
-    const product_in_history = ref(null)
-    //const page = ref(null)
-
-    onMounted(()=>{
-        console.log(import.meta.env.VITE_API_URL);
-        // try{
-        //     page.value = useRoute.params.page;
-        // }
-        // catch{}
-        //console.log("PAGE IN HOME: ",page.value)
-        axios.get('user_index')
-        .then((result) => {
-            console.log("api request result:",result.data);
-            pageCount.value = result.data.page_count;
-            categories.value = result.data.categories;
-            products.value = result.data.products.data;
-            product_in_history.value = result.data.product_in_history;
-        });
+    const productsStore = useArrayStore();
+    
+    onMounted(async () => {
+        await productsStore.fetchData()
+        console.log("TTTTTTTT",productsStore.products)
     })
+
+    
 </script>
 <template>
     <div id="main font-syne" class = "main">
         <Header />
         <div class="products font-syne">
-            <Filters v-if="pageCount != null && categories != null && products != null " :pageCount = "pageCount" :categories = "categories" :products="products"></Filters>
+            <Filters v-if="productsStore.pageCount != null && productsStore.categories != null && productsStore.products != null " :pageCount = "productsStore.pageCount" :categories = "productsStore.categories" :products="productsStore.products"></Filters>
         </div>
-        <RecentlyViewed :product_in_history="product_in_history"></RecentlyViewed>
+        <RecentlyViewed :product_in_history="productsStore.product_in_history"></RecentlyViewed>
         <Footer />
     </div>
 </template>

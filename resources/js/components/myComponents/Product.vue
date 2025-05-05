@@ -50,7 +50,7 @@
                             <button id = "button_minus" class = "coutn_bar-button" @click="decrease" type="button">-</button>
                             <span class = "selected_count_number" id = "selected_count">1</span>
                             <button id = "button_plus" class = "coutn_bar-button" @click = "increse" type="button">+</button>
-                            <a :href = "route('payment', { id: product.id, quantity: 1})" class = "product_card-link">
+                            <a v-if="product" :href = "route('payment', { id: product.id, quantity: 1})" class = "product_card-link">
                                 <button class = "font-syne product_card-button">BUY NOW</button>
                             </a>
                         </div>

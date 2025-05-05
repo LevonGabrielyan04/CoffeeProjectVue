@@ -171,7 +171,7 @@
                     return response.json();
                 })
                 .then(data => {
-                    console.log(data.products)
+                    console.log("Pointer",data.products)
                     localProducts.value = data.products;
                 })
                 .catch(err => {

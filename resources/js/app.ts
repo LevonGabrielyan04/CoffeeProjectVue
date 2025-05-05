@@ -8,6 +8,7 @@ import { ZiggyVue } from 'ziggy-js';
 import { initializeTheme } from './composables/useAppearance';
 import router from './router'
 import axios from 'axios';
+import { createPinia } from 'pinia';
 
 axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 
@@ -26,6 +27,8 @@ declare module 'vite/client' {
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
+const pinia = createPinia();
+
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) => resolvePageComponent(`./pages/${name}.vue`, import.meta.glob<DefineComponent>('./pages/**/*.vue')),
@@ -34,6 +37,7 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue)
             .use(router)
+            .use(pinia)
             .mount(el);
     },
     progress: {

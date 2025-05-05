@@ -4,7 +4,7 @@
         <div class = "filters-container card-container">
             <h1 class=" text-6xl">Card</h1>
             <a class = "header-button buy-button" href = "{{ route('payment', ['user_id' => Auth::id()]) }}">Buy all</a>
-            <ProductList v-if = "products" :is_card = "true" :products="products"></ProductList>
+            <ProductList v-if = "card.cardProducts" :is_card = "true" :products="card.cardProducts"></ProductList>
 
         </div>
         <Footer />
@@ -16,11 +16,8 @@
     import ProductList from "./ProductList.vue"
     import {ref} from 'vue'
     import axios from "axios"
+    import {useCardStore} from '../../../../public/stores/cardStore'
 
-    const products = ref(null)
-    axios.get('/card').then((response)=>{
-        console.log("Card resoponse is: ",response.data.products);
-        
-        products.value = response.data.products
-    });
+    const card = useCardStore();
+    card.fetchData();
 </script>
