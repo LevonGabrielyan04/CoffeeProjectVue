@@ -13,12 +13,14 @@
         Προσθήκη στην κάρτα
     </router-link> 
     <div v-if="is_card" class = "links_in_card">
-        <a class = "font-syne product_card-button">Delete</a>
-        <a class = "font-syne product_card-button">Buy ({{props.product.pivot.quantity}})</a>
+        <button class = "font-syne product_card-button h-[52px]" @click="deleteProduct">Delete</button>
+        <a class = "font-syne product_card-button h-[52px] w-full">Buy ({{props.product.pivot.quantity}})</a>
     </div>
 </div>
 </template>
 <script setup>
+    import {onMounted} from 'vue'
+    import axios from 'axios';
     const props = defineProps({
         product:{
             type: Object,
@@ -29,11 +31,20 @@
             default: false
         }
     })
-    import {onMounted} from 'vue'
+    const emit = defineEmits(['delete-product'])
     const imagePath = "http://127.0.0.1:8000/" + "storage/" + props.product.image;
 
     onMounted(() => {
         console.log("products are",props.product);
         
     })
+
+    function deleteProduct(){
+        axios.get("/delete_from_card",{params:{
+                product_id: props.product.id
+            }
+        }).then((res) => {
+            emit('delete-product', props.product.id);
+        });
+    }
 </script>

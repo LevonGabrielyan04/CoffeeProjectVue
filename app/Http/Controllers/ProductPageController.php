@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductPageController extends Controller
 {
-    private $pagination = 3;
+    private $pagination = 2;
 
     public function index() {
         $products = Product::paginate($this->pagination);
@@ -68,7 +68,7 @@ class ProductPageController extends Controller
         return $this->sort($request->sort_type,'created_at');
     }
 
-    public function sort($sort_type,$type){
+    public function sort($sort_type,$type){ 
         $products = Product::orderBy($type, $sort_type)->get();
         $products->map(function ($product) {
             if(strlen($product->description) > 100) {
@@ -76,11 +76,10 @@ class ProductPageController extends Controller
             }
             return $product;
           });
-        $table_view = view('products_list',compact('products'))->render();
-        return response()->json(['succes' => true, 'table_view' => $table_view]);
+        return json_encode(compact('products')); 
     }
 
-    public function filter_data(Request $request){
+    public function filter_data(Request $request){//
         $data = $request->json()->all();
         $search_options = $data;        
         
@@ -94,8 +93,7 @@ class ProductPageController extends Controller
             }
             return $product;
           });
-        $table_view = view('products_list',compact('products'))->render();
-        return response()->json(['succes' => true, 'table_view' => $table_view]);
+        return json_encode(compact('products'));
     }
 
     public function filter_data_by_price(Request $request){
@@ -112,7 +110,6 @@ class ProductPageController extends Controller
             return $product;
           });
 
-        $table_view = view('products_list',compact('products'))->render();
-        return response()->json(['succes' => true, 'table_view' => $table_view]);
+        return json_encode(compact('products'));
     }
 }

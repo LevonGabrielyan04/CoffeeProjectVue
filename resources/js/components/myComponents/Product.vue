@@ -45,14 +45,14 @@
                     </div>
 
                     <div class = "selected_count">
-                        <a @click = "addToCart( product.id, userId)" id = "cart_button" class = "add_to_cart_button">Προσθήκη στην κάρτα</a>
+                        <a v-if="user" @click = "addToCart( product.id, user.id)" id = "cart_button" class = "add_to_cart_button">Προσθήκη στην κάρτα</a>
                         <div class = "count_bar">
                             <button id = "button_minus" class = "coutn_bar-button" @click="decrease" type="button">-</button>
                             <span class = "selected_count_number" id = "selected_count">1</span>
                             <button id = "button_plus" class = "coutn_bar-button" @click = "increse" type="button">+</button>
-                            <!-- <a href = "{{ route('payment', ['id' => $product->id, 'quantity' => '1']) }}" class = "product_card-link">
+                            <a :href = "route('payment', { id: product.id, quantity: 1})" class = "product_card-link">
                                 <button class = "font-syne product_card-button">BUY NOW</button>
-                            </a> -->
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -71,10 +71,16 @@
     import Header from './Header.vue'
     import Footer from './Footer.vue'
     import RecentlyViewed from './RecentlyViewed.vue'
+
+    var user = ref(null);
+    axios.get("/user")
+    .then((result)=>{
+        if(result.data != '')
+            user.value = result.data;
+    })
     
-    const userId = document.getElementById('app').dataset.userId
-    const route = useRoute();
-    const productId = route.params.id;
+    const urlRoute = useRoute();
+    const productId = urlRoute.params.id;
     var product = ref(null);
     var product_in_history = ref(null);
     var imagePath = ref(null);
@@ -110,6 +116,9 @@
     }
 
     function addToCart(product_id, user_id){
+        console.log("TEST USER ID: ",user_id);
+        console.log("TEST PRODUCT ID: ",product_id);
+        
             const $quantity = $('#selected_count').html();
             $.post('/add_to_cart',  {
                     id_product: product_id,

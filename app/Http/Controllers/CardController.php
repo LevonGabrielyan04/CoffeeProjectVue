@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CardController extends Controller
 {
-    public function index()
+    public function index()//
     {
         $products = Auth::user()->cardProducts;
 
@@ -20,7 +20,7 @@ class CardController extends Controller
             }
             return $product;
           });
-        return view('card.card',compact('products'));
+        return json_encode(compact('products'));
     }
     public function add_to_cart(Request $request)
     {
@@ -49,10 +49,9 @@ class CardController extends Controller
 
         if($card_item->save())
         {
-            event(new PurchaseStatusUpdated($card_item->id));
-            return response()->json(['message' => 'Item(s) added to card']);
+            return json_encode(['message' => 'Item(s) added to card']);
         }
-        return response()->json(['message'=> 'Something went wrong, please try again later']);
+        return json_encode(['message'=> 'Something went wrong, please try again later']);
     }
 
     public function delete_from_card(Request $request){
@@ -74,7 +73,6 @@ class CardController extends Controller
             $total_price += $product->price * $product->pivot->quantity;
         }
         
-        
-        return view('ribbon',compact('products','total_price'))->render();
+        return json_encode(compact('products','total_price'));
     }
 }

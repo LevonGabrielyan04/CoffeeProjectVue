@@ -5,15 +5,21 @@
     import Footer from "./Footer.vue"
     import {ref, onMounted} from 'vue'
     import axios from 'axios'
+    import { useRoute } from 'vue-router'
 
     const pageCount = ref(null)
     const categories = ref(null)
     const products = ref(null)
     const product_in_history = ref(null)
+    //const page = ref(null)
 
     onMounted(()=>{
         console.log(import.meta.env.VITE_API_URL);
-        
+        // try{
+        //     page.value = useRoute.params.page;
+        // }
+        // catch{}
+        //console.log("PAGE IN HOME: ",page.value)
         axios.get('user_index')
         .then((result) => {
             console.log("api request result:",result.data);
