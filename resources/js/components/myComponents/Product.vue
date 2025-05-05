@@ -1,6 +1,8 @@
 <template>
     <div>
-        <div id = "ribbon"></div>
+        <div id = "ribbon">
+            <Ribbon v-if="ribbonContent" :products="ribbonContent.products" :totalPrice="ribbonContent.total_price"></Ribbon>
+        </div>
         <div class = "main">
             <Header />
             <div class = "path_container">
@@ -71,6 +73,7 @@
     import Header from './Header.vue'
     import Footer from './Footer.vue'
     import RecentlyViewed from './RecentlyViewed.vue'
+    import Ribbon from './Ribbon.vue'
 
     var user = ref(null);
     axios.get("/user")
@@ -84,6 +87,7 @@
     var product = ref(null);
     var product_in_history = ref(null);
     var imagePath = ref(null);
+    const ribbonContent = ref(null)
     axios.get('product',{
         params:{
             id: productId
@@ -116,9 +120,6 @@
     }
 
     function addToCart(product_id, user_id){
-        console.log("TEST USER ID: ",user_id);
-        console.log("TEST PRODUCT ID: ",product_id);
-        
             const $quantity = $('#selected_count').html();
             $.post('/add_to_cart',  {
                     id_product: product_id,
@@ -129,7 +130,10 @@
                     $("#cart_button").html(result.message);
                 });
             $.get('/ribbon', function(data) {
-                $('#ribbon').html(data);
+                console.log("----------------");
+                data = JSON.parse(data)
+                console.log(data)   
+                ribbonContent.value = {products: data.products, total_price: data.total_price}
                 $('#ribbon').removeClass('d_none');
             });
             
