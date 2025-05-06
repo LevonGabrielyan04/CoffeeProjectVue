@@ -7,17 +7,20 @@
     import axios from 'axios'
     import { useRoute } from 'vue-router'
     import {useArrayStore} from '../../../../public/stores/arrayStore'
+    import LoadingScreen from './LoadingScreen.vue';
 
     const productsStore = useArrayStore();
+    var isLoading = ref(true);
     
     onMounted(async () => {
-        await productsStore.fetchData()
-        console.log("TTTTTTTT",productsStore.products)
+        await productsStore.fetchData();
+        isLoading.value = false;
     })
 
-    
+       
 </script>
 <template>
+    <LoadingScreen :isLoading = "isLoading"> </LoadingScreen>
     <div id="main font-syne" class = "main">
         <Header />
         <div class="products font-syne">

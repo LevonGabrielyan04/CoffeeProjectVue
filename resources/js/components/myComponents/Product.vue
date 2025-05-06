@@ -1,4 +1,5 @@
 <template>
+    <LoadingScreen :isLoading = "isLoading"></LoadingScreen>
     <div>
         <div id = "ribbon">
             <Ribbon v-if="ribbonContent" :products="ribbonContent.products" :totalPrice="ribbonContent.total_price"></Ribbon>
@@ -74,6 +75,7 @@
     import Footer from './Footer.vue'
     import RecentlyViewed from './RecentlyViewed.vue'
     import Ribbon from './Ribbon.vue'
+    import LoadingScreen from './LoadingScreen.vue'
 
     var user = ref(null);
     axios.get("/user")
@@ -88,6 +90,7 @@
     var product_in_history = ref(null);
     var imagePath = ref(null);
     const ribbonContent = ref(null)
+    var isLoading = ref(true);
     axios.get('product',{
         params:{
             id: productId
@@ -97,6 +100,7 @@
         product_in_history.value = res.data.product_in_history
         console.log('the product: ',product.value);
         imagePath.value = import.meta.env.VITE_API_URL + "/storage/" + product.value.image;
+        isLoading.value = false;
     })
     function increse(){
         const $span = $('#selected_count');
@@ -130,7 +134,6 @@
                     $("#cart_button").html(result.message);
                 });
             $.get('/ribbon', function(data) {
-                console.log("----------------");
                 data = JSON.parse(data)
                 console.log(data)   
                 ribbonContent.value = {products: data.products, total_price: data.total_price}

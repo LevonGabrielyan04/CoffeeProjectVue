@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ProductAddedToCart;
 use App\Events\PurchaseStatusUpdated;
 use App\Models\Card;
 use App\Models\Product;
@@ -49,6 +50,7 @@ class CardController extends Controller
 
         if($card_item->save())
         {
+            event(new ProductAddedToCart($card_item->product_id,$card_item->quantity));
             return json_encode(['message' => 'Item(s) added to card']);
         }
         return json_encode(['message'=> 'Something went wrong, please try again later']);

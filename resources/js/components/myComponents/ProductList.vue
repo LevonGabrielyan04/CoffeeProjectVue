@@ -1,9 +1,10 @@
 <template>
-    <div id = "products-main" class = "products-main">
-    <ProductCard v-for="product in props.products" :product="product" :is_card="props.is_card"></ProductCard>
     
-    <h2 v-if="is_card && _.isEmpty(props.products)">Card is empty</h2>
-</div>
+    <div id = "products-main" class = "products-main">
+        <ProductCard v-for="product in props.products" :product="product" :is_card="props.is_card"></ProductCard>
+    
+        <h2 v-if="is_card && _.isEmpty(props.products)">Card is empty</h2>
+    </div>
 </template>
 <script setup>
 import _ from 'lodash';
