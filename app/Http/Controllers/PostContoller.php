@@ -41,9 +41,9 @@ class PostContoller extends Controller
         $product->image = $request->file('image')->store('product_images','public');
         
         if( $product->save() ){
-            return redirect()->back()->with('success', 'product created');
+            return json_encode(['success' => 'product created']);
         }
-        return redirect()->back()->with('fail', 'incorect input');
+        return json_encode(['fail' => 'incorect input']);
     }
     public function show(Request $request){
         $request->validate([
@@ -58,7 +58,7 @@ class PostContoller extends Controller
         else{
             return redirect()->back()->with('fail', 'Please input name eg."Levon Gabrielyan",email, or Id number');
         }
-        return view('admin.see_one_user',compact('user'));
+        return json_encode(compact('user'));
     }
 
     public function show_product(Request $request){
@@ -92,8 +92,8 @@ class PostContoller extends Controller
         $category = new Category();
         $category->name = $request->name;
         if( $category->save() ){
-            return redirect()->back()->with('success', 'category created');
+         return response()->json(['message' => 'Category created'], 201);
         }
-        return redirect()->back()->with('fail', 'incorect input');
+        return response()->json(['message' => 'Failed to save'], 500);
     }
 }

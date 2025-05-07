@@ -107,9 +107,10 @@
 </div>
 </template>
 <script setup>
-    import {ref, onMounted} from 'vue'
+    import {ref, onMounted,toRef,watch} from 'vue'
     import axios from 'axios'
     import ProductList from './ProductList.vue'
+    import { useRoute } from 'vue-router'
 
     const props = defineProps({
         pageCount:{
@@ -131,13 +132,25 @@
     })
 
     var localProducts = ref(props.products)
+    const route = useRoute()
 
     onMounted(() => {
         console.log("count is:", props.pageCount)
         console.log("categories are:", props.categories)
-        index_onload(props.pageCount);
+        index_onload(props.pageCount,1);
         
     })
+
+    watch(() => props.page, (newVal, oldVal) => {
+        console.log("watch worked!");
+        console.log("hhhhhhhhh",newVal);
+        index_onload(props.pageCount, 2)
+    });
+
+    watch(()=> props.products, (newVal, oldVal)=>{
+        localProducts.value = newVal
+    })
+
 
     function do_some_magic(svg_id,div_id){
         spin_the_svg(svg_id);
@@ -241,5 +254,34 @@
         .catch(err => {
             console.error('Error:', err);
         });
+    }
+
+    function index_onload(page_count,page){        
+        var next = document.getElementById('next');
+        var previous = document.getElementById('previous');
+        const selected = document.getElementsByClassName('pages_bar-link_selected')[0];
+        var numbers = document.getElementsByClassName('pages_bar-link');
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        const currentPage = parseInt(urlParams.get('page'))|| 1;
+    
+        const url = new URL(next.href);
+        url.searchParams.set('page', Math.min(currentPage + 1,page_count));
+        next.href = url.toString();
+
+        const url2 = new URL(previous.href);
+        url2.searchParams.set('page', Math.max(currentPage - 1,1));
+        previous.href = url2.toString();
+        
+
+        const selected_number = page;
+        console.log('cccccccc', selected_number);
+        
+        for(var num of numbers){
+            num.classList.remove("pages_bar-link_selected");
+            if(parseInt(num.innerHTML) == selected_number){
+                num.classList.add("pages_bar-link_selected");
+            }
+        } 
     }
 </script>

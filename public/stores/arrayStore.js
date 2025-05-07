@@ -10,11 +10,15 @@ export const useArrayStore = defineStore('arrayStore', () => {
   const isLoading = ref(false)
   const error = ref(null)
 
-  async function fetchData() {
+  async function fetchData(page = 1) {
     isLoading.value = true
     error.value = null
     try {
-      const result = await axios.get('user_index')
+      const result = await axios.get('user_index',{
+        params:{
+          page: page
+        }
+      });
       pageCount.value = result.data.page_count
       categories.value = result.data.categories
       products.value = result.data.products.data

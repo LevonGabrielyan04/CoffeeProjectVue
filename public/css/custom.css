@@ -909,8 +909,6 @@ accent-color:#AB2531;
   }
 
   .form_at_center{
-    /* background-color:#FDF2E3;
-    border: 1px solid #AB2531; */
     padding:30px;
     border-radius: 25px;
     display:flex;
@@ -1000,6 +998,7 @@ accent-color:#AB2531;
 
   .center_in_see_one{
     flex-direction: column;
+    background-color: white;
   }
 
   .user_card-no-border{

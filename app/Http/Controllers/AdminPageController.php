@@ -12,12 +12,12 @@ class AdminPageController extends Controller//index(sax),show(1hat),create(get z
     public function show_admin_panel()//a.k.a. create()
     {
         $categories = Category::all();
-        return view('admin.admin_panel',compact('categories'));
+        return json_encode(compact('categories'));
     }
     public function index(){
         $users = User::get();
 
-        return view('admin.see_all_users',compact('users'));
+        return json_encode(compact('users'));
     }
 
     public function show(){

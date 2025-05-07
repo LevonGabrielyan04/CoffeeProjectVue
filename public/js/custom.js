@@ -62,30 +62,3 @@ svg_close.style.display = "none";
 svg_open.style.display = "initial";
 }
 }
-
-function index_onload(page_count){
-    var next = document.getElementById('next');
-    var previous = document.getElementById('previous');
-    const selected = document.getElementsByClassName('pages_bar-link_selected')[0];
-    var numbers = document.getElementsByClassName('pages_bar-link');
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    const currentPage = parseInt(urlParams.get('page'))|| 1;
-  
-    const url = new URL(next.href);
-    url.searchParams.set('page', Math.min(currentPage + 1,page_count));
-    next.href = url.toString();
-
-    const url2 = new URL(previous.href);
-    url2.searchParams.set('page', Math.max(currentPage - 1,1));
-    previous.href = url2.toString();
-    
-
-    const selected_number = urlParams.get('page') || '1';
-    for(var num of numbers){
-        num.classList.remove("pages_bar-link_selected");
-        if(parseInt(num.innerHTML) == selected_number){
-            num.classList.add("pages_bar-link_selected");
-        }
-    } 
-}
