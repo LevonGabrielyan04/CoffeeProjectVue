@@ -107,7 +107,7 @@
 </div>
 </template>
 <script setup>
-    import {ref, onMounted,toRef,watch} from 'vue'
+    import {ref, onMounted,toRef,watch,nextTick } from 'vue'
     import axios from 'axios'
     import ProductList from './ProductList.vue'
     import { useRoute } from 'vue-router'
@@ -135,17 +135,13 @@
     const route = useRoute()
 
     onMounted(() => {
-        console.log("count is:", props.pageCount)
-        console.log("categories are:", props.categories)
         index_onload(props.pageCount,1);
-        
     })
 
-    watch(() => props.page, (newVal, oldVal) => {
-        console.log("watch worked!");
-        console.log("hhhhhhhhh",newVal);
-        index_onload(props.pageCount, 2)
-    });
+    watch(() => props.page, async (newVal, oldVal) => {
+    await nextTick();
+    index_onload(props.pageCount, Number(newVal));
+  });
 
     watch(()=> props.products, (newVal, oldVal)=>{
         localProducts.value = newVal
@@ -256,14 +252,16 @@
         });
     }
 
-    function index_onload(page_count,page){        
+    function index_onload(page_count,page){ 
+        if(!page)       
+            page = 1
         var next = document.getElementById('next');
         var previous = document.getElementById('previous');
         const selected = document.getElementsByClassName('pages_bar-link_selected')[0];
         var numbers = document.getElementsByClassName('pages_bar-link');
         const urlParams = new URLSearchParams(window.location.search);
         
-        const currentPage = parseInt(urlParams.get('page'))|| 1;
+        const currentPage = page;
     
         const url = new URL(next.href);
         url.searchParams.set('page', Math.min(currentPage + 1,page_count));

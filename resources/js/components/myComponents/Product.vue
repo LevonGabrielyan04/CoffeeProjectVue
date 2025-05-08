@@ -53,16 +53,16 @@
                             <button id = "button_minus" class = "coutn_bar-button" @click="decrease" type="button">-</button>
                             <span class = "selected_count_number" id = "selected_count">1</span>
                             <button id = "button_plus" class = "coutn_bar-button" @click = "increse" type="button">+</button>
-                            <a v-if="product" :href = "route('payment', { id: product.id, quantity: 1})" class = "product_card-link">
-                                <button class = "font-syne product_card-button">BUY NOW</button>
+                            <a v-if="product" class = "product_card-link">
+                                <button @click="() => {showModal = true;}" class = "font-syne product_card-button" >BUY NOW</button>
                             </a>
+                            <PaymentMethodModal v-if="showModal" :product="product"></PaymentMethodModal>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <RecentlyViewed v-if="product_in_history" :product_in_history="product_in_history"></RecentlyViewed>
-        
+        <RecentlyViewed v-if="product_in_history" :product_in_history="product_in_history" ></RecentlyViewed>
         <Footer />
         </div>
     </div>
@@ -76,6 +76,7 @@
     import RecentlyViewed from './RecentlyViewed.vue'
     import Ribbon from './Ribbon.vue'
     import LoadingScreen from './LoadingScreen.vue'
+    import PaymentMethodModal from './PaymentMethodModal.vue'
 
     var user = ref(null);
     axios.get("/user")
@@ -86,6 +87,7 @@
     
     const urlRoute = useRoute();
     const productId = urlRoute.params.id;
+    var showModal = ref(false);
     var product = ref(null);
     var product_in_history = ref(null);
     var imagePath = ref(null);

@@ -32,6 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/checkout', [PaymentController::class, 'checkout'])->name('checkout');
     Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');
+    Route::get('/payment-paypal', [PaymentController::class, 'createTransactionPaypal'])->name('paymentPayPal');
     Route::get('/success', [PaymentController::class, 'success'])->name('success');
     Route::get('/cancel', [PaymentController::class, 'cancel'])->name('cancel');
     Route::post('/add_to_cart', [CardController::class, 'add_to_cart'])->name('add.to.cart');

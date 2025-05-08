@@ -41,9 +41,9 @@ class PostContoller extends Controller
         $product->image = $request->file('image')->store('product_images','public');
         
         if( $product->save() ){
-            return json_encode(['success' => 'product created']);
+            return response()->json(['message' => 'Product created'], 201);
         }
-        return json_encode(['fail' => 'incorect input']);
+        return response()->json(['message' => 'Failed to save product'], 500);
     }
     public function show(Request $request){
         $request->validate([

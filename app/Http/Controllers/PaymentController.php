@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
 use Illuminate\Support\Facades\Auth;
+use Srmklive\PayPal\Services\PayPal as PayPalClient;
+use Illuminate\Support\Facades\Redirect;
 
 use function Pest\Laravel\delete;
 
@@ -17,6 +19,45 @@ class PaymentController extends Controller
     public function checkout()
     {
         return view('payment.checkout');
+    }
+
+    public function createTransactionPaypal(Request $request)
+    {
+        $provider = new PayPalClient;
+        $provider->setApiCredentials(config('paypal'));
+        $token = $provider->getAccessToken();
+        $provider->setAccessToken($token);
+        $count = $request->quantity;
+        $productId = $request->id;
+
+        $response = $provider->createOrder([
+            "intent" => "CAPTURE",
+            "application_context" => [
+                "return_url" => env('VITE_API_URL'),
+                "cancel_url" => env('VITE_API_URL'),
+            ],
+            "purchase_units" => [
+                [
+                    "amount" => [
+                        "currency_code" => "USD",
+                        "value" => "10.00"
+                    ],
+                    "custom_id" => "product-{$productId}-count-{$count}",
+                    "description" => "Product #{$productId} (Quantity: {$count})"
+                ]
+            ]
+        ]);
+        
+
+        if (isset($response['id']) && $response['status'] === 'CREATED') {
+            foreach ($response['links'] as $link) {
+                if ($link['rel'] === 'approve') {
+                    return redirect()->away($link['href']);
+                }
+            }
+        }
+
+        return redirect('/');
     }
 
     public function payment(Request $request)
@@ -79,8 +120,8 @@ class PaymentController extends Controller
                 'quantity' => $count,
             ]],
             'mode' => 'payment',
-            'success_url' => route('success', ['product_id' => $productId]),
-            'cancel_url' => route('cancel'),
+            'success_url' => env('VITE_API_URL'),
+            'cancel_url' => env('VITE_API_URL'),
             'metadata' => [
                 'user_id' => Auth::id(),
                 'user_email' => Auth::user()->email,

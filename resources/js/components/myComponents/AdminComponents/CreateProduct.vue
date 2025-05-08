@@ -71,6 +71,7 @@
                         <input @change="changeFile" name="image" accept="image/*" class = "image_input"  type='file' id="image" />
                         <span v-if="errors.image" class="text-red-600">{{ errors.image[0] }}</span>
                         <button class = "header-button" type="submit">Create</button>
+                        <span v-if="message" class="text-green-600">{{ message }}</span>
                     </div>
             </form>
             
@@ -84,7 +85,7 @@
     import AdminHeader from './AdminHeader.vue';
 
     const errors = ref({})
-    const errorMessages = ref(null)
+    const message = ref(null)
     const formData = new FormData();
     const form = {
         name: "",
@@ -109,7 +110,13 @@
             formData.append(key, form[key]);
         }
 
-        axios.post(route('store'), formData).catch((res)=> {
+        axios.post(route('store'), formData)
+        .then((res)=>{
+            console.log(res);
+            
+            message.value = res.data.message
+        })
+        .catch((res)=> {
             errors.value = res.response.data.errors
         })
     }
